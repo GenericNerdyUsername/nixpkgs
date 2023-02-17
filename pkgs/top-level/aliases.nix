@@ -1230,7 +1230,8 @@ mapAliases ({
   openafs_1_8 = openafs; # Added 2022-08-22
   openbazaar = throw "openbazzar has been removed from nixpkgs as upstream has abandoned the project"; # Added 2022-01-06
   openbazaar-client = throw "openbazzar-client has been removed from nixpkgs as upstream has abandoned the project"; # Added 2022-01-06
-  opencascade_oce = throw "'opencascade_oce' has been renamed to/replaced by 'opencascade'"; # Converted to throw 2022-02-22
+  opencascade_oce = throw "'opencascade' is unmaintained. Instead, use 'opencascade-occt'"; # Modified 2023-02-17
+  opencascade = throw "'opencascade' is unmaintained. Instead, use 'opencascade-occt'"; # Added 2023-02-17
   opencl-icd = throw "'opencl-icd' has been renamed to/replaced by 'ocl-icd'"; # Converted to throw 2022-02-22
   openconnect_head = openconnect_unstable; # Added 2022-03-29
   openconnect_gnutls = openconnect; # Added 2022-03-29
