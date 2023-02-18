@@ -3,6 +3,7 @@
 , mkDerivation
 , fetchFromGitHub
 , cmake
+, dos2unix
 , ninja
 , gitpython
 , boost
@@ -57,8 +58,19 @@ mkDerivation rec {
     hash = "sha256-v8hanhy0UE0o+XqqIH3ZUtVom3q0KGELcfXFRSDr0TA=";
   };
 
+
+  prePatch = ''
+    dos2unix src/Mod/Part/App/OCCError.h
+  '';
+
+  patches = [
+    # An unused include reference a file only present in older versions of opencascade, this patch removes it
+    ./remove-breaking-include.patch
+  ];
+
   nativeBuildInputs = [
     cmake
+    dos2unix
     ninja
     pkg-config
     pyside2-tools

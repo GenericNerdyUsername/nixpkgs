@@ -1,0 +1,10 @@
+--- a/src/ViewerTest/ViewerTest_CmdParser.cxx
++++ b/src/ViewerTest/ViewerTest_CmdParser.cxx
+@@ -21,6 +21,7 @@
+ 
+ #include <algorithm>
+ #include <iostream>
++#include <limits>
+ 
+ namespace
+ {

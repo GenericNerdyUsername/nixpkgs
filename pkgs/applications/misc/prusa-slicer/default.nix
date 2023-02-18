@@ -34,7 +34,8 @@
 , wxGTK32
 , xorg
 , fetchpatch
-, withSystemd ? lib.meta.availableOn stdenv.hostPlatform systemd, systemd
+, withSystemd ? lib.meta.availableOn stdenv.hostPlatform systemd
+, systemd
 , wxGTK-override ? null
 }:
 let
@@ -156,6 +157,8 @@ stdenv.mkDerivation rec {
   '';
 
   patches = [
+    # Allow newer versions of opencascade to be used
+    ./opencascade.patch
     # wxWidgets: CheckResizerFlags assert fix
     (fetchpatch {
       url = "https://github.com/prusa3d/PrusaSlicer/commit/24a5ebd65c9d25a0fd69a3716d079fd1b00eb15c.patch";

@@ -1,0 +1,12 @@
+diff --git a/src/Mod/Part/App/OCCError.h b/src/Mod/Part/App/OCCError.h
+index 19e8208..27b8ffd 100644
+--- a/src/Mod/Part/App/OCCError.h
++++ b/src/Mod/Part/App/OCCError.h
+@@ -50,7 +50,6 @@
+ # include <Standard_Overflow.hxx>
+ # include <Standard_ProgramError.hxx>
+ # include <Standard_RangeError.hxx>
+-# include <Standard_TooManyUsers.hxx>
+ # include <Standard_TypeMismatch.hxx>
+ # include <Standard_Underflow.hxx>
+ 
