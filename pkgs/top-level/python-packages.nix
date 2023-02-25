@@ -1727,6 +1727,8 @@ self: super: with self; {
 
   casa-formats-io = callPackage ../development/python-modules/casa-formats-io { };
 
+  casadi-bindings = callPackage ../development/python-modules/casadi { };
+
   casbin = callPackage ../development/python-modules/casbin { };
 
   case = callPackage ../development/python-modules/case { };

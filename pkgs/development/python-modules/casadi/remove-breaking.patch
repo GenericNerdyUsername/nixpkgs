@@ -1,0 +1,39 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -778,6 +778,7 @@
+ #####################################################
+ ###################### swig #########################
+ #####################################################
++include_directories(CASADI_DEV_DIR_GOES_HERE)
+ option(WITH_EXTENDING_CASADI "Compile a demonstration that shows how a project that depends on CasADi can be implemented." OFF)
+ if(WITH_PYTHON OR WITH_MATLAB OR WITH_OCTAVE OR WITH_JSON)
+   add_subdirectory(swig)
+@@ -825,7 +826,7 @@
+ ################# include the rest ##################
+ #####################################################
+ add_subdirectory(external_packages)
+-add_subdirectory(casadi)
++#add_subdirectory(casadi)
+ add_subdirectory(experimental EXCLUDE_FROM_ALL)
+ add_subdirectory(misc)
+ 
+@@ -860,8 +861,8 @@
+ ########### Generate config files ######################
+ ########################################################
+ # Add all targets to the build-tree export set
+-export(TARGETS casadi
+-  FILE "${PROJECT_BINARY_DIR}/casadi-targets.cmake")
++#export(TARGETS casadi
++#  FILE "${PROJECT_BINARY_DIR}/casadi-targets.cmake")
+ 
+ # Export the package for use from the build-tree
+ # (this registers the build-tree with a global CMake-registry)
+@@ -897,7 +898,7 @@
+ 
+ # Install the export set for use with the install-tree
+ file(RELATIVE_PATH REL_CMAKE_PREFIX "${CMAKE_INSTALL_PREFIX}" "${CMAKE_PREFIX}")
+-install(EXPORT casadi-targets DESTINATION ${REL_CMAKE_PREFIX})
++#install(EXPORT casadi-targets DESTINATION ${REL_CMAKE_PREFIX})
+ 
+ set(CPACK_PACKAGE_CONTACT "casadi-users@googlegroups.com")
+ set(CPACK_PACKAGE_VERSION ${PACKAGE_VERSION_FULL})
