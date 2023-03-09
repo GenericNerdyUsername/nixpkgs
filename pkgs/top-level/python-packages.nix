@@ -7148,6 +7148,8 @@ self: super: with self; {
 
   nkdfu = callPackage ../development/python-modules/nkdfu { };
 
+  nlopt-bindings = callPackage ../development/python-modules/nlopt { };
+
   nlpcloud = callPackage ../development/python-modules/nlpcloud { };
 
   nltk = callPackage ../development/python-modules/nltk { };
