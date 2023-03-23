@@ -1662,6 +1662,7 @@ self: super: with self; {
   cadquery = callPackage ../development/python-modules/cadquery {
     inherit (pkgs.darwin.apple_sdk.frameworks) Cocoa;
   };
+  cadquery-ocp = callPackage ../development/python-modules/cadquery-ocp { };
 
   caffe = toPythonModule (pkgs.caffe.override {
     pythonSupport = true;
