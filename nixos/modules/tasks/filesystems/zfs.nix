@@ -180,6 +180,18 @@ let
       '';
     };
 
+  createScrubService = blocking: pool:
+    nameValuePair "zfs-boot-scrub-${pool}" {
+      after = [ "zfs-import-${pool}" ];
+      requires = [ "zfs-import-${pool}" ];
+      before = [ "local-fs.target" ];
+      requiredBy = [ "local-fs.target" ];
+      script = ''
+        echo "Beginning scrub of zpool ${pool}"
+        ${cfgZfs.package}/sbin/zpool scrub ${optionalString blocking "-w"} ${pool}
+      '';
+    };
+
   zedConf = generators.toKeyValue {
     mkKeyValue = generators.mkKeyValueDefault {
       mkValueString = v:
@@ -312,6 +324,29 @@ in
           names instead. For root pools the encryption key can be supplied via both
           an interactive prompt (keylocation=prompt) and from a file (keylocation=file://).
         '';
+      };
+
+      scrubOnBoot = {
+        enable = mkEnableOption (lib.mdDoc "scrub pools after importing during boot");
+
+        blocking = mkOption {
+          default = false;
+          types = types.bool;
+          description = lib.mdDoc ''
+            Whether or not to wait for scrubs to finish before continuing the boot process
+          '';
+        };
+
+        pools = mkOption {
+          default = [];
+          types = types.listOf types.str;
+          example = [ "tank" "data" ];
+          description = lib.mdDoc ''
+            Name or GUID of pools to scrub after importing during boot.
+
+            An empty list (the default) will scrub all imported pools.
+          '';
+        };
       };
 
       passwordTimeout = mkOption {
@@ -884,6 +919,26 @@ in
       };
 
       systemd.timers.zpool-trim.timerConfig.Persistent = "yes";
+    })
+    (mkIf (cfgZfs.enabled && cfgZfs.scrubOnBoot.enable) {
+      assertions = [
+        {
+        # TODO testing:
+        #  - eval
+        #  - boots with enabled
+        #  - actually scrubs
+        #  - local-fs waits for completion
+        #  - assertion works (empty list doesnt break, correct list doesnt break, incorrect list does break)
+          assertion = all (pool: elem pool dataPools) cfgZfs.scrubOnBoot.pools;
+          message = ''
+            Can't scrub a pool that doesn't get imported
+          '';
+        }
+      ];
+      systemd.services = let
+        createScrubService' = createScrubService cfgZfs.scrubOnBoot.blocking;
+        pools = if cfgZfs.scrubOnBoot.pools != [] then cfgZfs.scrubOnBoot.pools else dataPools;
+      in listToAttrs (map createScrubService' pools);
     })
   ];
 }
