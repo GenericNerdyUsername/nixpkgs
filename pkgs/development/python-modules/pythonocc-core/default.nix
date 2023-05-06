@@ -19,13 +19,13 @@
 
 stdenv.mkDerivation rec {
   pname = "pythonocc-core";
-  version = "7.6.2";
+  version = "7.7.0";
 
   src = fetchFromGitHub {
     owner = "tpaviot";
     repo = "pythonocc-core";
     rev = "refs/tags/${version}";
-    hash = "sha256-45pqPQ07KYlpFwJSAYVHbzuqDQTbAvPpxReal52DCzU=";
+    hash = "sha256-YybpwiCeBnwZfYS6ZxUbycHFn2DlqYxcNMylRN5ihFM=";
   };
 
   postPatch = ''
