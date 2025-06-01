@@ -1,0 +1,51 @@
+--- a/riscof/Templates/setup/model/riscof_model.py
++++ b/riscof/Templates/setup/model/riscof_model.py
+@@ -72,7 +72,7 @@
+        # Note the march is not hardwired here, because it will change for each
+        # test. Similarly the output elf name and compile macros will be assigned later in the
+        # runTests function
+-       self.compile_cmd = 'riscv{1}-unknown-elf-gcc -march={0} \
++       self.compile_cmd = 'riscv{1}-none-elf-gcc -march={0} \
+          -static -mcmodel=medany -fvisibility=hidden -nostdlib -nostartfiles -g\
+          -T '+self.pluginpath+'/env/link.ld\
+          -I '+self.pluginpath+'/env/\
+--- a/riscof/Templates/setup/reference/riscof_model.py
++++ b/riscof/Templates/setup/reference/riscof_model.py
+@@ -46,8 +46,8 @@
+ 
+         #TODO: The following assumes you are using the riscv-gcc toolchain. If
+         #      not please change appropriately
+-        self.objdump_cmd = 'riscv{1}-unknown-elf-objdump -D {0} > {2};'
+-        self.compile_cmd = 'riscv{1}-unknown-elf-gcc -march={0} \
++        self.objdump_cmd = 'riscv{1}-none-elf-objdump -D {0} > {2};'
++        self.compile_cmd = 'riscv{1}-none-elf-gcc -march={0} \
+          -static -mcmodel=medany -fvisibility=hidden -nostdlib -nostartfiles\
+          -T '+self.pluginpath+'/env/link.ld\
+          -I '+self.pluginpath+'/env/\
+--- a/riscof/Templates/setup/sail_cSim/riscof_sail_cSim.py
++++ b/riscof/Templates/setup/sail_cSim/riscof_sail_cSim.py
+@@ -41,8 +41,8 @@
+     def initialise(self, suite, work_dir, archtest_env):
+         self.suite = suite
+         self.work_dir = work_dir
+-        self.objdump_cmd = 'riscv{1}-unknown-elf-objdump -D {0} > {2};'
+-        self.compile_cmd = 'riscv{1}-unknown-elf-gcc -march={0} \
++        self.objdump_cmd = 'riscv{1}-none-elf-objdump -D {0} > {2};'
++        self.compile_cmd = 'riscv{1}-none-elf-gcc -march={0} \
+          -static -mcmodel=medany -fvisibility=hidden -nostdlib -nostartfiles\
+          -T '+self.pluginpath+'/env/link.ld\
+          -I '+self.pluginpath+'/env/\
+@@ -64,11 +64,11 @@
+             self.isa += 'f'
+         if "D" in ispec["ISA"]:
+             self.isa += 'd'
+-        objdump = "riscv{0}-unknown-elf-objdump".format(self.xlen)
++        objdump = "riscv{0}-none-elf-objdump".format(self.xlen)
+         if shutil.which(objdump) is None:
+             logger.error(objdump+": executable not found. Please check environment setup.")
+             raise SystemExit(1)
+-        compiler = "riscv{0}-unknown-elf-gcc".format(self.xlen)
++        compiler = "riscv{0}-none-elf-gcc".format(self.xlen)
+         if shutil.which(compiler) is None:
+             logger.error(compiler+": executable not found. Please check environment setup.")
+             raise SystemExit(1)

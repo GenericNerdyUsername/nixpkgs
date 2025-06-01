@@ -1,0 +1,52 @@
+--- a/riscof/cli.py
++++ b/riscof/cli.py
+@@ -8,7 +8,6 @@
+ import pytz
+ import shutil
+ import configparser
+-import distutils.dir_util
+ 
+ from jinja2 import Template
+ 
+@@ -36,6 +35,18 @@
+     isa_file = None
+     platform_file = None
+ 
++def copy_tree(src, dst):
++    FILE_PERMISSIONS = stat.S_IREAD | stat.S_IWRITE | stat.S_IRGRP | stat.S_IRGRP
++    DIR_PERMISSIONS = FILE_PERMISSIONS | stat.S_IEXEC | stat.S_IXGRP | stat.S_IXOTH
++
++    shutil.copy_tree(src, dst)
++    os.chmod(dst, DIR_PERMISSIONS)
++    for root, dirs, files in os.walk(dst):
++      for dir in dirs:
++        os.chmod(os.path.join(root, dir), DIR_PERMISSIONS)
++      for file in files:
++        os.chmod(os.path.join(root, file), FILE_PERMISSIONS)
++
+ def setup_directories(work_dir,skip_rm=False):
+     #Creating work directory
+     if not os.path.exists(work_dir):
+@@ -508,7 +519,7 @@
+         logger.info("Creating sample Plugin directory for [DUT]: " +dutname)
+         src = os.path.join(constants.root, "Templates/setup/model/")
+         dest = os.path.join(cwd, dutname)
+-        distutils.dir_util.copy_tree(src, dest)
++        copy_tree(src, dest)
+ 
+         os.rename(cwd+'/'+dutname+'/model_isa.yaml',
+                 cwd+'/'+dutname+'/'+dutname+'_isa.yaml')
+@@ -531,11 +542,11 @@
+         if refname == 'sail_cSim':
+             src = os.path.join(constants.root, "Templates/setup/sail_cSim/")
+             dest = os.path.join(cwd, refname)
+-            distutils.dir_util.copy_tree(src, dest)
++            copy_tree(src, dest)
+         else:
+             src = os.path.join(constants.root, "Templates/setup/reference/")
+             dest = os.path.join(cwd, refname)
+-            distutils.dir_util.copy_tree(src, dest)
++            copy_tree(src, dest)
+             os.rename(cwd+'/'+refname+'/riscof_model.py',
+                 cwd+'/'+refname+'/riscof_'+refname+'.py')
+             with open(cwd+'/'+refname+'/riscof_'+refname+'.py', 'r') as file :

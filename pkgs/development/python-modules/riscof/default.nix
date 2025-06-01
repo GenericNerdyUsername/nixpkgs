@@ -1,12 +1,19 @@
-{
-  lib,
-  buildPythonPackage,
-  fetchFromGitHub,
-  jinja2,
-  pythonOlder,
-  riscv-config,
-  riscv-isac,
+{ lib
+, buildPythonPackage
+, fetchFromGitHub
+, git
+, jinja2
+, pythonOlder
+, riscv-config
+, riscv-isac
+, python3Packages
+, pkgsCross
+, callPackage
 }:
+
+# TODO BEFORE COMMIT:
+# fix first patch
+# see if the test data directory is needed or if we can modify the template
 
 buildPythonPackage rec {
   pname = "riscof";
@@ -23,9 +30,17 @@ buildPythonPackage rec {
   };
 
   patches = [
-    # riscof copies a template directory from the store, but breaks because it
-    # doesn't change permissions and expects it to be writeable
-    ./make_writeable.patch
+    # riscof expects you to use the riscv-gcc toolchain, whos output binaries are name "riscv32/64-unknown-elf"
+    # our embedded riscv toolchains are called "riscv32/64-none-elf"
+    # this patch replaces uses of the former with the latter
+    ./riscv_none_elf.patch
+    # sail-riscv changed the name of its output binaries, riscof hasn't been updated to account for that
+    # this patch means the paths are read from environment variables (TODO and TODO respectively) which we set further down
+    ./sail_riscv_name.patch
+    # distutils.dir_util is used to copy some files, but distutils doesn't exist in python 3.12
+    # this patch replaces usages of distutils with shutil (which is part of the stdlib)
+    # also sets the permission bits correctly
+    ./replace_distutils.patch
   ];
 
   postPatch = ''
@@ -35,7 +50,7 @@ buildPythonPackage rec {
       --replace "GitPython==3.1.17" "GitPython"
   '';
 
-  propagatedBuildInputs = [
+  dependencies = [
     riscv-isac
     riscv-config
     jinja2
@@ -45,6 +60,17 @@ buildPythonPackage rec {
 
   # No unitests available
   doCheck = false;
+
+  passthru = rec {
+    riscvArchTest = fetchFromGitHub rec {
+      owner = "riscv-non-isa";
+      repo = "riscv-arch-test";
+      name = "riscv-arch-test";
+      rev = "3.10.0";
+      hash = "sha256-nhmKQJGyqbtAt51yDE1YdcD9GSQQv77VmLYpO85j120=";
+    };
+    tests.spikeAgainstSail = callPackage ./test.nix { inherit riscvArchTest; };
+  };
 
   meta = with lib; {
     description = "RISC-V Architectural Test Framework";
